@@ -1,0 +1,15 @@
+:root {
+  --navy-900: #0a1128;
+  --navy-800: #111c3a;
+  --blue-400: #7cc0ff;   /* accent text / active pill */
+  --blue-500: #3b82f6;   /* primary button */
+  --bg-light: #f3f5fb;
+  --text-dark: #111a36;
+  --text-muted: #5b6477;
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: #f3f5fb; }
+html { scroll-behavior: smooth; }
+section[id] { scroll-margin-top: 80px; }
