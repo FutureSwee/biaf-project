@@ -3,6 +3,11 @@ import './section.css';
 import './contact.css';
 import { contact, sections } from '../data/siteData';
 
+// Web3Forms access key. It is safe to be public: it can only send messages
+// to the inbox it was created for. Swap it for a key tied to info@biaf.co.za
+// when the demo is over.
+const WEB3FORMS_KEY = '499d5a40-0da9-4913-96b1-99859f7d919d';
+
 const icon = {
   width: 20,
   height: 20,
@@ -50,17 +55,32 @@ export default function Contact() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    // Honeypot filled in: it's a bot. Pretend it worked and send nothing.
+    if (form.website) {
+      setStatus('success');
+      setForm(empty);
+      return;
+    }
+
     setStatus('sending');
     setError('');
     try {
-      const res = await fetch('/api/contact.php', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `New website enquiry from ${form.name}`,
+          from_name: 'BIAF Website',
+          name: form.name,
+          email: form.email,
+          message: form.message,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Something went wrong. Please try again.');
+        throw new Error(data.message || 'Something went wrong. Please try again.');
       }
       setStatus('success');
       setForm(empty);
